@@ -1,20 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import Login from './components/Login';
+import Home from './components/Home';
+import AddStudy from './components/AddStudy';
+import StudyList from './components/StudyList';
+import StudySummary from './components/StudySummary';
+
+import { initDB } from './database/Database';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
+
+  useEffect(() => {
+    initDB();  // cria a tabela na primeira execução
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login">
+
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="AddStudy" component={AddStudy} />
+        <Stack.Screen name="StudyList" component={StudyList} />
+        <Stack.Screen name="StudySummary" component={StudySummary} />
+
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
