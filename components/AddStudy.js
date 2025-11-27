@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import { getDB } from '../database/Database';
+import { addStudy } from '../database/Database';
 
 export default function AddStudy({ navigation }) {
   const [materia, setMateria] = useState('');
@@ -9,22 +9,23 @@ export default function AddStudy({ navigation }) {
   const [tempo, setTempo] = useState('');
   const [nivel, setNivel] = useState('');
 
-  const db = getDB();
-
-  function salvar() {
+  async function salvar() {
     if (!materia || !conteudo || !dataEstudo || !tempo || !nivel) {
       alert("Preencha todos os campos!");
       return;
     }
 
-    db.transaction((tx) => {
-      tx.executeSql(
-        "INSERT INTO estudos (materia, conteudo, dataEstudo, tempo, nivel) VALUES (?, ?, ?, ?, ?)",
-        [materia, conteudo, dataEstudo, parseInt(tempo), nivel]
-      );
-    });
+    const estudo = {
+      materia: String(materia),
+      conteudo: String(conteudo),
+      dataEstudo: String(dataEstudo),
+      tempo: Number(tempo),
+      nivel: String(nivel)
+    };
 
-    alert("Estudo salvo!");
+    await addStudy(estudo);
+
+    alert("Estudo salvo com sucesso!");
     navigation.goBack();
   }
 

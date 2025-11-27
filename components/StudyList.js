@@ -1,25 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
-import { getDB } from '../database/Database';
+import { getStudies, clearStudies } from '../database/Database';
 
 export default function StudyList() {
   const [estudos, setEstudos] = useState([]);
-  const db = getDB();
 
-  function carregar() {
-    db.transaction((tx) => {
-      tx.executeSql(
-        "SELECT * FROM estudos",
-        [],
-        (_, resultado) => setEstudos(resultado.rows._array)
-      );
-    });
+  async function carregar() {
+    const lista = await getStudies();
+    setEstudos(lista);
   }
 
-  function excluir(id) {
-    db.transaction((tx) => {
-      tx.executeSql("DELETE FROM estudos WHERE id = ?", [id]);
-    });
+  async function excluir(id) {
+    const lista = await getStudies();
+    const novaLista = lista.filter(item => item.id !== id);
+    await AsyncStorage.setItem('estudos', JSON.stringify(novaLista));
     carregar();
   }
 

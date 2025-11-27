@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { getDB } from '../database/Database';
+import { getStudies } from '../database/Database';
 
 export default function StudySummary() {
   const [total, setTotal] = useState(0);
-  const db = getDB();
+
+  async function calcular() {
+    const lista = await getStudies();
+    const soma = lista.reduce((acc, item) => acc + item.tempo, 0);
+    setTotal(soma);
+  }
 
   useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        "SELECT SUM(tempo) as totalHoras FROM estudos",
-        [],
-        (_, resultado) => {
-          setTotal(resultado.rows._array[0].totalHoras || 0);
-        }
-      );
-    });
+    calcular();
   }, []);
 
   return (
