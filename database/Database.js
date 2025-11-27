@@ -9,7 +9,7 @@ export async function addStudy(study) {
     const newStudy = {
       id: Date.now(),
       ...study
-    };
+    };///
 
     const updated = [...current, newStudy];
     await AsyncStorage.setItem('estudos', JSON.stringify(updated));
